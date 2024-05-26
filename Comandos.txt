@@ -10,9 +10,9 @@ $ git remote add origin "https://github.com/YessiGM/Juego.git"
 
 git status -------Miras que archivos faltan actualizar en repositorio local y cuales estan subidos
 
-git add (Nombre del archivo) -----agregar archivos 
+git add (Nombre del archivo) -----agregar archivos rama local  
 
-git commit -m ("Mensaje o comentario") ----- confirmas los archivos y agregas mensaje o comentario----------------
+git commit -m ("Mensaje o comentario") ----- confirmas los archivos y agregas mensaje o comentario---------------- rama local
 
 git push -u origin (Nombre de la rama) ---para subir a github los archivos
 
@@ -29,6 +29,8 @@ git bracnh (nombre) ---- creas rama
 git branch -d (nombre) ------ Eliminas la rama 
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------
+
+git merge nombrec nombred 
 
 
 
