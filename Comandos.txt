@@ -32,6 +32,7 @@ git branch -d (nombre) ------ Eliminas la rama
 
 git merge nombrec nombred 
 
+Esto es nuevo 
 nombrec= nombre de la carpeta que quieres copiar
 nombred= nombre de la carpeta hacia donde lo quieres mandar
 
