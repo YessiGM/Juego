@@ -1,14 +1,17 @@
 #include "raylib.h"
 
 // Definición de estados del juego
-typedef enum PantallaJuego { MENU = 0, NIVELES, SALIR } PantallaJuego;
+typedef enum PantallaJuego { MENU = 0, NIVELES, SALIR, NIVELEASY, NIVELNORMAL, NIVELHARD } PantallaJuego;
 
 // Declaraciones de funciones
-void ActualizarMenu(PantallaJuego *pantallaActual, Font font, Sound sound2);
-void DibujarMenu(Font font);
+void DibujarMenu(PantallaJuego *pantallaActual, Font font, Sound sound2);
 void DibujarNiveles(PantallaJuego *pantallaActual, Font font, Sound sound2);
+void DibujarNE(PantallaJuego *pantallaActual, Font font, Sound sound2);
+void DibujarNN(PantallaJuego *pantallaActual, Font font, Sound sound2);
+void DibujarNH(PantallaJuego *pantallaActual, Font font, Sound sound2);
 void sonido2(Sound *sound2);
-void limpiarRecursos(Texture2D texture, Texture2D texture2, Texture2D texture3, Font font, Sound sound, Sound sound2);
+void sonidomenu(Sound *soundmenu);
+void limpiarRecursos(Texture2D texture, Texture2D texture2, Texture2D texture3, Font font, Sound sound, Sound sound2, Sound soundmenu);
 
 int main(void)
 {
@@ -73,6 +76,8 @@ int main(void)
     // Reproducir sonido de carga
     Sound sound2;
     sonido2(&sound2);
+    Sound soundmenu;
+    sonidomenu(&soundmenu);
 
     // Mostrar "Cargando..." en un fondo negro
     float loadingTime = 6.0f;  // 6 segundos de pantalla de carga
@@ -102,7 +107,7 @@ int main(void)
     {
         if (pantallaActual == MENU)
         {
-            ActualizarMenu(&pantallaActual, font, sound2);
+            DibujarMenu(&pantallaActual, font, sound2);
         }
 
         BeginDrawing();
@@ -111,7 +116,7 @@ int main(void)
         if (pantallaActual == MENU)
         {
             DrawTexture(texture2, 0, 0, WHITE);  // Dibujar el fondo del menú
-            DibujarMenu(font);  // Dibujar los elementos del menú
+            DibujarMenu(&pantallaActual , font, sound2);  // Dibujar los elementos del menú
         }
         else if (pantallaActual == NIVELES)
         {
@@ -124,12 +129,13 @@ int main(void)
     }
 
     // Liberar recursos
-    limpiarRecursos(texture, texture2, texture3, font, sound, sound2);
+    limpiarRecursos(texture, texture2, texture3, font, sound, sound2, soundmenu);
     
     return 0;
 }
 
-void ActualizarMenu(PantallaJuego *pantallaActual, Font font, Sound sound2)
+
+void DibujarMenu(PantallaJuego *pantallaActual, Font font, Sound sound2)
 {
     Vector2 mousePoint = GetMousePosition();
     Rectangle botonNIVELES = { 400, 220, 200, 50 };
@@ -143,10 +149,7 @@ void ActualizarMenu(PantallaJuego *pantallaActual, Font font, Sound sound2)
         sonido2(&sound2);
         *pantallaActual = SALIR;  // Cambia al estado de salir
     }
-}
 
-void DibujarMenu(Font font)
-{
     int outlineThickness = 1;
     DrawTextEx(font, "N O M B R E  D E L  J U E G O", (Vector2){ 230, 100 }, 35, 0, BLACK);
 
@@ -244,11 +247,17 @@ void sonido2(Sound *sound2)
     *sound2 = LoadSound("carga.wav");
     PlaySound(*sound2);
 }
+void sonidomenu(Sound *soundmenu)
+{
+    *soundmenu = LoadSound("soundmenu.wav");
+    PlaySound(*soundmenu);
+}
 
-void limpiarRecursos(Texture2D texture, Texture2D texture2, Texture2D texture3, Font font, Sound sound, Sound sound2)
+void limpiarRecursos(Texture2D texture, Texture2D texture2, Texture2D texture3, Font font, Sound sound, Sound sound2,Sound soundmenu)
 {
     UnloadSound(sound);
     UnloadSound(sound2);
+    UnloadSound(soundmenu);
     UnloadTexture(texture);
     UnloadTexture(texture2);
     UnloadTexture(texture3);
