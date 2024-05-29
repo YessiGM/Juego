@@ -2,6 +2,9 @@
 
 // Definición de estados del juego
 typedef enum PantallaJuego { MENU = 0, NIVELES, SALIR, NIVELEASY, NIVELNORMAL, NIVELHARD } PantallaJuego;
+Color cafeOscuro={139, 69, 19, 255};
+Color cafeOscuroB={121, 55, 8, 255};
+Color Rojos={192, 6, 4, 255};
 
 // Declaraciones de funciones
 void DibujarMenu(PantallaJuego *pantallaActual, Font font, Sound sound2, Sound *soundmenu);
@@ -76,6 +79,7 @@ int main(void)
     // Reproducir sonido de carga
     Sound sound2;
     sonido2(&sound2);
+
     Sound soundmenu;
 
     // Mostrar "Cargando..." en un fondo negro
@@ -104,10 +108,12 @@ int main(void)
     // Mostrar la imagen "menu.png" en toda la pantalla
     while (pantallaActual != SALIR && !WindowShouldClose())
     {
+        
         if (pantallaActual == MENU)
         {
             DrawTexture(texture2, 0, 0, WHITE);  // Dibujar el fondo del menú
             DibujarMenu(&pantallaActual, font, sound2, &soundmenu);// Dibujar los elementos del menú
+            DibujarVolumen(font, sound2);
         }
 
         BeginDrawing();
@@ -117,6 +123,7 @@ int main(void)
         {
             DrawTexture(texture3, 0, 0, WHITE);  // Dibujar el fondo de los niveles
             DibujarNiveles(&pantallaActual, font, sound2, &soundmenu);
+            DibujarVolumen(font, sound2);
         }
         if(pantallaActual == NIVELEASY)
         { 
@@ -146,6 +153,7 @@ int main(void)
 
 void DibujarMenu(PantallaJuego *pantallaActual, Font font, Sound sound2, Sound *soundmenu)
 {
+    //volumenG(font, &volumen);
     Vector2 mousePoint = GetMousePosition();
     Rectangle botonNIVELES = { 400, 220, 200, 50 };
     Rectangle botonSalir = { 400, 300, 200, 50 };
@@ -221,12 +229,10 @@ void DibujarMenu(PantallaJuego *pantallaActual, Font font, Sound sound2, Sound *
     DrawTextEx(font, "S A L I R", (Vector2){ 455, 318 }, 20, 0, GRAY);
 }
 
-    Color cafeOscuro={139, 69, 19, 255};
-    Color cafeOscuroB={121, 55, 8, 255};
-    Color Rojos={192, 6, 4, 255};
 
 void DibujarNiveles(PantallaJuego *pantallaActual, Font font, Sound sound2, Sound *soundmenu)
 {
+    //volumenG(font, &volumen);
     sonidomenu(soundmenu);
     DrawTextEx(font, "EASY", (Vector2){ 700, 70 }, 30, 5, cafeOscuro);
     DrawTextEx(font, "NORMAL", (Vector2){ 670, 175 }, 30, 5, cafeOscuro);
@@ -289,6 +295,18 @@ void DibujarNH(PantallaJuego *pantallaActual, Font font, Sound sound2)
         *pantallaActual = NIVELES;  // Cambia al estado de juego
     }
 }   
+
+void DibujarVolumen(Font font, Sound sound2)
+{
+            Vector2 mousePosicion = GetMousePosition();
+            DrawTextEx(font, "Subir Volumen",(Vector2){ 100, 375}, 10, 5, Rojos);
+            DrawTextEx(font, "Bajar Volumen",(Vector2){ 300, 375}, 10, 5, Rojos);
+            Rectangle botonVS = { 100, 375, 225, 10 };
+            Rectangle botonVB = { 300, 375, 225, 10 };
+            if (CheckCollisionPointRec(mousePosicion, botonVS) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON));
+
+            if (CheckCollisionPointRec(mousePosicion, botonVB) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON));
+}
 
 void sonido2(Sound *sound2)
 {
