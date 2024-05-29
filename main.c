@@ -4,8 +4,8 @@
 typedef enum PantallaJuego { MENU = 0, NIVELES, SALIR, NIVELEASY, NIVELNORMAL, NIVELHARD } PantallaJuego;
 
 // Declaraciones de funciones
-void DibujarMenu(PantallaJuego *pantallaActual, Font font, Sound sound2);
-void DibujarNiveles(PantallaJuego *pantallaActual, Font font, Sound sound2);
+void DibujarMenu(PantallaJuego *pantallaActual, Font font, Sound sound2, Sound *soundmenu);
+void DibujarNiveles(PantallaJuego *pantallaActual, Font font, Sound sound2, Sound *soudnmenu);
 void DibujarNE(PantallaJuego *pantallaActual, Font font, Sound sound2);
 void DibujarNN(PantallaJuego *pantallaActual, Font font, Sound sound2);
 void DibujarNH(PantallaJuego *pantallaActual, Font font, Sound sound2);
@@ -77,7 +77,6 @@ int main(void)
     Sound sound2;
     sonido2(&sound2);
     Sound soundmenu;
-    sonidomenu(&soundmenu);
 
     // Mostrar "Cargando..." en un fondo negro
     float loadingTime = 6.0f;  // 6 segundos de pantalla de carga
@@ -107,24 +106,35 @@ int main(void)
     {
         if (pantallaActual == MENU)
         {
-            DibujarMenu(&pantallaActual, font, sound2);
+            DrawTexture(texture2, 0, 0, WHITE);  // Dibujar el fondo del menú
+            DibujarMenu(&pantallaActual, font, sound2, &soundmenu);// Dibujar los elementos del menú
         }
 
         BeginDrawing();
         ClearBackground(RAYWHITE);
 
-        if (pantallaActual == MENU)
-        {
-            DrawTexture(texture2, 0, 0, WHITE);  // Dibujar el fondo del menú
-            DibujarMenu(&pantallaActual , font, sound2);  // Dibujar los elementos del menú
-        }
-        else if (pantallaActual == NIVELES)
+        if(pantallaActual == NIVELES)
         {
             DrawTexture(texture3, 0, 0, WHITE);  // Dibujar el fondo de los niveles
-            DibujarNiveles(&pantallaActual, font, sound2);
-        
+            DibujarNiveles(&pantallaActual, font, sound2, &soundmenu);
+        }
+        if(pantallaActual == NIVELEASY)
+        { 
+            StopSound(soundmenu);  // Detener sonido del menú al cambiar de pantalla
+            DibujarNE(&pantallaActual, font, sound2);
         }
 
+        if(pantallaActual == NIVELNORMAL)
+        {
+            StopSound(soundmenu);  // Detener sonido del menú al cambiar de pantalla
+            DibujarNN(&pantallaActual, font, sound2);
+        }
+        if(pantallaActual == NIVELHARD)
+        {
+            StopSound(soundmenu);  // Detener sonido del menú al cambiar de pantalla
+           DibujarNH(&pantallaActual, font, sound2);
+        }
+    
         EndDrawing();
     }
 
@@ -134,8 +144,7 @@ int main(void)
     return 0;
 }
 
-
-void DibujarMenu(PantallaJuego *pantallaActual, Font font, Sound sound2)
+void DibujarMenu(PantallaJuego *pantallaActual, Font font, Sound sound2, Sound *soundmenu)
 {
     Vector2 mousePoint = GetMousePosition();
     Rectangle botonNIVELES = { 400, 220, 200, 50 };
@@ -148,6 +157,11 @@ void DibujarMenu(PantallaJuego *pantallaActual, Font font, Sound sound2)
     if (CheckCollisionPointRec(mousePoint, botonSalir) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
         sonido2(&sound2);
         *pantallaActual = SALIR;  // Cambia al estado de salir
+    }
+
+    // Añadir la siguiente condición para reproducir el sonido del menú
+    if (*pantallaActual == MENU) {
+        sonidomenu(soundmenu);
     }
 
     int outlineThickness = 1;
@@ -206,12 +220,14 @@ void DibujarMenu(PantallaJuego *pantallaActual, Font font, Sound sound2)
     // Dibujar botón "Salir"
     DrawTextEx(font, "S A L I R", (Vector2){ 455, 318 }, 20, 0, GRAY);
 }
+
     Color cafeOscuro={139, 69, 19, 255};
     Color cafeOscuroB={121, 55, 8, 255};
     Color Rojos={192, 6, 4, 255};
-void DibujarNiveles(PantallaJuego *pantallaActual, Font font, Sound sound2)
+
+void DibujarNiveles(PantallaJuego *pantallaActual, Font font, Sound sound2, Sound *soundmenu)
 {
-    
+    sonidomenu(soundmenu);
     DrawTextEx(font, "EASY", (Vector2){ 700, 70 }, 30, 5, cafeOscuro);
     DrawTextEx(font, "NORMAL", (Vector2){ 670, 175 }, 30, 5, cafeOscuro);
     DrawTextEx(font, "HARD", (Vector2){ 690, 280 }, 30, 5, cafeOscuroB);
@@ -225,35 +241,70 @@ void DibujarNiveles(PantallaJuego *pantallaActual, Font font, Sound sound2)
 
     if (CheckCollisionPointRec(mousePosicion, botonEASY) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
         sonido2(&sound2);
-        *pantallaActual = MENU;  // Cambia al estado de juego
+        *pantallaActual = NIVELEASY;  // Cambia al estado de juego
     }
     if (CheckCollisionPointRec(mousePosicion, botonNORMAL) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
         sonido2(&sound2);
-        *pantallaActual = MENU;  // Cambia al estado de juego
+        *pantallaActual = NIVELNORMAL;  // Cambia al estado de juego
     }
     if (CheckCollisionPointRec(mousePosicion, botonHARD) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
         sonido2(&sound2);
-        *pantallaActual = MENU;  // Cambia al estado de juego
+        *pantallaActual = NIVELHARD;  // Cambia al estado de juego
     }
     if (CheckCollisionPointRec(mousePosicion, botonREGRESAR) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
         sonido2(&sound2);
         *pantallaActual = MENU;  // Cambia al estado de juego
     }
-    
 }
+
+void DibujarNE(PantallaJuego *pantallaActual, Font font, Sound sound2)
+{
+    Vector2 mousePosicion = GetMousePosition();
+    DrawTextEx(font, "REGRESAR",(Vector2){ 645, 375}, 30, 5, Rojos);
+    Rectangle botonREGRESAR = { 645, 375, 225, 30 };
+    if (CheckCollisionPointRec(mousePosicion, botonREGRESAR) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+        sonido2(&sound2);
+        *pantallaActual = NIVELES;  // Cambia al estado de juego
+    }
+}
+
+void DibujarNN(PantallaJuego *pantallaActual, Font font, Sound sound2)
+{
+    Vector2 mousePosicion = GetMousePosition();
+    DrawTextEx(font, "REGRESAR",(Vector2){ 645, 375}, 30, 5, Rojos);
+    Rectangle botonREGRESAR = { 645, 375, 225, 30 };
+    if (CheckCollisionPointRec(mousePosicion, botonREGRESAR) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+        sonido2(&sound2);
+        *pantallaActual = NIVELES;  // Cambia al estado de juego
+    }
+}
+
+void DibujarNH(PantallaJuego *pantallaActual, Font font, Sound sound2)
+{
+    Vector2 mousePosicion = GetMousePosition();
+    DrawTextEx(font, "REGRESAR",(Vector2){ 645, 375}, 30, 5, Rojos);
+    Rectangle botonREGRESAR = { 645, 375, 225, 30 };
+    if (CheckCollisionPointRec(mousePosicion, botonREGRESAR) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+        sonido2(&sound2);
+        *pantallaActual = NIVELES;  // Cambia al estado de juego
+    }
+}   
 
 void sonido2(Sound *sound2)
 {
     *sound2 = LoadSound("carga.wav");
     PlaySound(*sound2);
 }
+
 void sonidomenu(Sound *soundmenu)
 {
-    *soundmenu = LoadSound("soundmenu.wav");
-    PlaySound(*soundmenu);
+    if (!IsSoundPlaying(*soundmenu)) {  // Verifica si el sonido del menú no se está reproduciendo actualmente
+        *soundmenu = LoadSound("soundmenu.wav");
+        PlaySound(*soundmenu);
+    }
 }
 
-void limpiarRecursos(Texture2D texture, Texture2D texture2, Texture2D texture3, Font font, Sound sound, Sound sound2,Sound soundmenu)
+void limpiarRecursos(Texture2D texture, Texture2D texture2, Texture2D texture3, Font font, Sound sound, Sound sound2, Sound soundmenu)
 {
     UnloadSound(sound);
     UnloadSound(sound2);
@@ -265,3 +316,4 @@ void limpiarRecursos(Texture2D texture, Texture2D texture2, Texture2D texture3, 
     CloseAudioDevice();
     CloseWindow();
 }
+
